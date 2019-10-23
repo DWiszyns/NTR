@@ -1,0 +1,58 @@
+@model Z02.Models.NoteIndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>List of your notes</h1>
+ <form asp-action="Filter" method="post">
+    <div class="form-group">
+        <label asp-for="DateFrom" class="control-label"></label>
+        <input asp-for="DateFrom" class="form-control" />
+        <span asp-validation-for="DateFrom" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateTo" class="control-label"></label>
+        <input asp-for="DateTo" class="form-control" />
+        <span asp-validation-for="DateTo" class="text-danger"></span>
+    </div>
+   @Html.DropDownListFor(n => n.Category, Model.Categories, "Please select a category")
+    <button type="submit">Filter</button>
+</form>
+<form asp-action="Clear">
+    @Html.HiddenFor(model => model.DateFrom)
+    @Html.HiddenFor(model => model.DateTo)
+    @Html.HiddenFor(model => model.Category)
+    <button type="submit">Filter</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes[0].Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes[0].Title)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Notes) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-Title="@item.Title">Edit</a> |
+                <a asp-action="Delete" asp-route-Title="@item.Title">Remove</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Add" >Add</a> |
+<a asp-action="Index" asp-controller="Home">Cancel</a>
