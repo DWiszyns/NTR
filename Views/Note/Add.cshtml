@@ -12,13 +12,12 @@
             <input type="submit" value="Save" class="btn btn-primary" />
         </form>
         <form asp-controller="Note" asp-action="AddCategory" asp-action="AddCategory">
-            @Html.HiddenFor(m=>m.Note.Title)
             <label asp-for="NewCategory" class="control-label"></label>
             <input asp-for="NewCategory" class="form-control" />
             <input type="submit" value="Add" class="btn btn-primary" />
         </form>
 <form method="post" asp-action="RemoveCategories">
-    @Html.HiddenFor(m=>m.Note.Title)
+    <input type="hidden" name="Id" value="@Model.Note.Title" />
     <h2>In Categories:</h2>
     <table class="table">
         <thead>
@@ -40,5 +39,5 @@
     </table>
     <input type="submit" value="Remove categories" class="btn btn-primary" />
 </form>
-<a asp-action="Index" asp-controller="Note">Back to list</a>
+
 <div>

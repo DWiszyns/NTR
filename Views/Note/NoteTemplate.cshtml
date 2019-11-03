@@ -1,6 +1,7 @@
 @model NoteEditViewModel
 <div class="col-md-4">
-        <form asp-controller="Note" asp-action="Save" method="post">
+        <form asp-controller="Note" asp-action="Edit" method="post">
+            <input type="hidden" asp-for="@Model.OldTitle" value="@Model.Note.Title" />
             <label asp-for="Note.Title" class="control-label"></label>
             <input asp-for="Note.Title" class="form-control" />
             <label asp-for="Note.Text" class="control-label"></label>
@@ -12,13 +13,13 @@
             <input type="submit" value="Save" class="btn btn-primary" />
         </form>
         <form asp-controller="Note" asp-action="AddCategory" asp-action="AddCategory">
-            @Html.HiddenFor(m=>m.Note.Title)
+            @Html.HiddenFor(m=>m.Note)
             <label asp-for="NewCategory" class="control-label"></label>
             <input asp-for="NewCategory" class="form-control" />
             <input type="submit" value="Add" class="btn btn-primary" />
         </form>
 <form method="post" asp-action="RemoveCategories">
-    @Html.HiddenFor(m=>m.Note.Title)
+    <input type="hidden" name="Id" value="@Model.Note.Title" />
     <h2>In Categories:</h2>
     <table class="table">
         <thead>
@@ -40,5 +41,5 @@
     </table>
     <input type="submit" value="Remove categories" class="btn btn-primary" />
 </form>
-<a asp-action="Index" asp-controller="Note">Back to list</a>
+
 <div>

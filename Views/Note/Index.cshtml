@@ -54,5 +54,18 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.Notes.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Notes.HasNextPage ? "disabled" : "";
+}
+
+<div class="row">
+    <a class="btn col-sm-offset-1 btn-primary" asp-action="New">New</a> 
+    <a asp-action="Index" asp-route-pageNumber="@(Model.Notes.PageIndex - 1)" class="btn btn-default col-sm-offset-5 col-md-offset-6 @prevDisabled">Prev Page</a>
+    <span>@Model.Notes.PageIndex / @Model.Notes.TotalPages</span>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.Notes.PageIndex + 1)" class="btn btn-default @nextDisabled">Next Page</a>
+</div>
+
 <a asp-action="Add" >Add</a> |
 <a asp-action="Index" asp-controller="Home">Cancel</a>
