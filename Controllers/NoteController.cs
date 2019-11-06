@@ -103,5 +103,11 @@ namespace Z02.Controllers
             _notesRepository.Delete(title);
             return Index(DateTime.MinValue,DateTime.MinValue);
         }
+        [HttpPost]
+        public JsonResult doesFileNameExist(string title)
+        {
+        var file = _notesRepository.FindById(title);
+        return Json(file == null);
+        }
     }
 }

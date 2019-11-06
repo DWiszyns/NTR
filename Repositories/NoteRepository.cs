@@ -19,6 +19,7 @@ namespace Z02.Repositories
             string extension="";
             if(files.Where(m=>m==title+".txt").Any()) extension="txt";
             else if(files.Where(m=>m==title+".md").Any()) extension="md";
+            else return null;
             using (StreamReader file = new StreamReader("./data/"+title+"."+extension))
             {
                 string line = file.ReadLine();

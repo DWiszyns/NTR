@@ -11,7 +11,9 @@ namespace Z02.Models
     public class NoteIndexViewModel
     {
         public string Category { get; set; }
+        [Display(Name="Date To")]
         public DateTime DateTo { get; set; }
+        [Display(Name="Date From")]
         public DateTime DateFrom { get; set; }
         public PaginatedList<Note> Notes { get; set; }
         public List<SelectListItem> Categories { get; }

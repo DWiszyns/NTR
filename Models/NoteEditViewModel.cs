@@ -11,6 +11,7 @@ namespace Z02.Models
     public class NoteEditViewModel
     {
         public Note Note {get;set;}
+        [Display(Name="New Category")]
         public string NewCategory { get; set; }
         public string[] CategoriesToRemove { get; set; }
         public string OldTitle  {get;set;}

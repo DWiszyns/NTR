@@ -1,6 +1,7 @@
 @model NoteEditViewModel
 <div class="col-md-4">
         <form asp-controller="Note" asp-action="Add" method="post">
+            @Html.ValidationSummary(true)
             <label asp-for="Note.Title" class="control-label"></label>
             <input asp-for="Note.Title" class="form-control" />
             <label asp-for="Note.Text" class="control-label"></label>
@@ -9,7 +10,8 @@
                 data-val-maxlength-max="5000"
                 data-val-maxlength="The field Description must be a string or array type with a maximum length of '5000'."
                 data-val="true" rows="4" cols="50" style="overflow:auto;resize:none" asp-for="PromptText"></textarea> <br />
-            @Html.DropDownListFor(n => n.Note.Extension, Model.Extensions, "Please select an Extension") 
+            @Html.LabelFor(n => n.Note.Extension) 
+            @Html.DropDownListFor(n => n.Note.Extension, Model.Extensions, "") 
             <br/><br/>
             @Html.HiddenFor(m=>m.Note.Date)
             @Html.HiddenFor(m=>m.Note.Extension)
@@ -20,6 +22,7 @@
             <input type="submit" value="Create" class="btn btn-primary" />
         </form>
         <form asp-controller="Note" asp-action="AddCategory">
+            @Html.ValidationSummary(true)
             @Html.HiddenFor(m=>m.Note.Title)
             @Html.HiddenFor(m=>m.Note.Text)
             @Html.HiddenFor(m=>m.Note.Date)
@@ -33,6 +36,7 @@
             <input type="submit" value="Add" class="btn btn-primary" />
         </form>
 <form method="post" asp-action="RemoveCategories">
+    @Html.ValidationSummary(true)
     @Html.HiddenFor(m=>m.Note.Title)
     @Html.HiddenFor(m=>m.Note.Text)
     @Html.HiddenFor(m=>m.Note.Date)

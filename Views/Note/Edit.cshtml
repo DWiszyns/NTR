@@ -1,6 +1,7 @@
 @model NoteEditViewModel
 <div class="col-md-4">
         <form asp-controller="Note" asp-action="Edit" method="post">
+            @Html.ValidationSummary(true)
             <label asp-for="Note.Title" class="control-label"></label>
             <input asp-for="Note.Title" class="form-control" />
             <label asp-for="Note.Text" class="control-label"></label>
@@ -19,6 +20,7 @@
             <input type="submit" value="Save" class="btn btn-primary" />
         </form>
         <form asp-controller="Note" asp-action="AddCategory" asp-action="AddCategory">
+            @Html.ValidationSummary(true)
             @Html.HiddenFor(m=>m.Note.Title)
             @Html.HiddenFor(m=>m.Note.Text)
             @Html.HiddenFor(m=>m.OldTitle)
@@ -32,6 +34,7 @@
             <input type="submit" value="Add" class="btn btn-primary" />
         </form>
 <form method="post" asp-action="RemoveCategories">
+    @Html.ValidationSummary(true)
     @Html.HiddenFor(m=>m.Note.Title)
     @Html.HiddenFor(m=>m.Note.Text)
     @Html.HiddenFor(m=>m.Note.Date)
