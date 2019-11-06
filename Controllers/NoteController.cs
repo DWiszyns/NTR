@@ -18,23 +18,15 @@ namespace Z02.Controllers
         {
             _notesRepository=new NoteRepository{};
             var notes = new List<Note>();
-            // notes.Add(new Note{
-            //     Title = "Some note",
-            //     Date = DateTime.Today.AddDays(-1),
-            //     Categories = new string[]{"sport","someothercategory"},
-            //     Text = "tralala, some note"
-            // });
-            // notes.Add(new Note{
-            //     Title = "Some other note",
-            //     Date = DateTime.Today.AddDays(1),
-            //     Categories = new string[]{"notsport"},
-            //     Text = "tralala, some note"
-            // });
             this.Notes=_notesRepository.FindAll().Cast<Note>().ToList();
         }
-        public IActionResult Index()
+        public IActionResult Index(DateTime dateFrom, DateTime dateTo, string category)
         {
+            if(dateFrom==null) dateFrom = new DateTime{};
+            if(dateFrom==null) dateFrom = DateTime.Today;
+            if(category==null) category="";
             string[] possibleCategories= new string[]{};
+            this.Notes=_notesRepository.FindAll().Cast<Note>().ToList();
             foreach(var n in Notes)
             {
                 foreach(var c in n.Categories)
@@ -43,9 +35,15 @@ namespace Z02.Controllers
 
                 }
             }
-
+            foreach(var n in Notes)
+            {
+                if(n.Date<=dateFrom || n.Date>=dateTo || (category!=""&&!n.Categories.Contains(category)))
+                {
+                    Notes.Remove(n);
+                }
+            }
             PaginatedList<Note> list = new PaginatedList<Note>(Notes,1,10);
-            return View(new NoteIndexViewModel(list,possibleCategories));
+            return View("Index",new NoteIndexViewModel(list,possibleCategories));
         }
 
         public IActionResult Add(string Title)
@@ -60,17 +58,27 @@ namespace Z02.Controllers
         {
             return View("Index");
         }
-        [HttpPost]
-        public IActionResult Filter(NoteIndexViewModel model)
+        public IActionResult Filter(DateTime dateFrom, DateTime dateTo, string category)
         {
+            string[] possibleCategories= new string[]{};
+            this.Notes=_notesRepository.FindAll().Cast<Note>().ToList();
             foreach(var n in Notes)
             {
-                if(n.Date>=model.DateFrom && n.Date<=model.DateTo && n.Categories.Contains(model.Category))
+                foreach(var c in n.Categories)
                 {
-                    model.Notes.Add(n);
+                    if(!possibleCategories.Contains(c)) possibleCategories=possibleCategories.Append(c).ToArray();
+
                 }
             }
-            return View("Index",model);
+            foreach(var n in Notes)
+            {
+                if(n.Date<=dateFrom || n.Date>=dateTo || !n.Categories.Contains(category))
+                {
+                    Notes.Remove(n);
+                }
+            }
+            PaginatedList<Note> list = new PaginatedList<Note>(Notes,1,10);
+            return View("Index",new NoteIndexViewModel(list,possibleCategories));
         }
         [HttpPost]
         public IActionResult AddCategory(NoteEditViewModel model)

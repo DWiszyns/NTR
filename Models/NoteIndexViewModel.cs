@@ -34,5 +34,17 @@ namespace Z02.Models
                 Categories.Add(new SelectListItem { Value = c, Text = c });
             }
         }
+        public NoteIndexViewModel(PaginatedList<Note> notes, string[] categories, string category, DateTime dateTo,DateTime dateFrom )
+        {
+            Notes=notes;
+            Categories = new List<SelectListItem> {};
+            foreach(var c in categories)
+            {
+                Categories.Add(new SelectListItem { Value = c, Text = c });
+            }
+            Category=category;
+            DateTo=dateTo;
+            DateFrom=dateFrom;
+        }
     }
 }
