@@ -47,10 +47,6 @@ namespace Z02.Controllers
             return View("Index",new NoteIndexViewModel(list,possibleCategories,category,dateFrom,dateTo));
         }
 
-        public IActionResult Add(string Title)
-        {
-            return View("Index");
-        }
         public IActionResult Delete(string Title)
         {
             return View("Index");
@@ -62,9 +58,8 @@ namespace Z02.Controllers
         [HttpPost]
         public IActionResult AddCategory(NoteEditViewModel model)
         {
-            Note prevNote=model.Note=Notes.Where(m=>m.Title==model.Note.Title).FirstOrDefault();
             model.Note.Categories=model.Note.Categories.Append(model.NewCategory).ToArray();
-            Notes[Notes.IndexOf(prevNote)]=model.Note;
+            //Notes[Notes.IndexOf(prevNote)]=model.Note;
             model.NewCategory="";
             return View("Edit",model);
         }
@@ -81,7 +76,8 @@ namespace Z02.Controllers
         }
         public IActionResult Add()
         {
-            return View();
+            Note n = new Note{};
+            return View(new NoteEditViewModel(n));
         }
         public IActionResult Edit(string title)
         {

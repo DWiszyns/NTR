@@ -9,16 +9,32 @@
                 data-val-maxlength-max="5000"
                 data-val-maxlength="The field Description must be a string or array type with a maximum length of '5000'."
                 data-val="true" rows="4" cols="50" style="overflow:auto;resize:none" asp-for="PromptText"></textarea> <br />
+            @Html.HiddenFor(m=>m.Note.Date)
+            @for (int i = 0; i < Model.Note.Categories.Count(); ++i)
+            {
+                @Html.HiddenFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly" })
+            }
             <input type="submit" value="Save" class="btn btn-primary" />
         </form>
         <form asp-controller="Note" asp-action="AddCategory" asp-action="AddCategory">
+            @Html.HiddenFor(m=>m.Note.Title)
+            @Html.HiddenFor(m=>m.Note.Text)
+            @Html.HiddenFor(m=>m.Note.Date)
+            @for (int i = 0; i < Model.Note.Categories.Count(); ++i)
+            {
+                @Html.HiddenFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly" })
+            }
             <label asp-for="NewCategory" class="control-label"></label>
-            <input asp-for="NewCategory" class="form-control" />
+            <input asp-for="NewCategory" class="form-control" /><br/>
             <input type="submit" value="Add" class="btn btn-primary" />
         </form>
 <form method="post" asp-action="RemoveCategories">
-    <input type="hidden" name="Id" value="@Model.Note.Title" />
+    @Html.HiddenFor(m=>m.Note.Title)
+    @Html.HiddenFor(m=>m.Note.Text)
+    @Html.HiddenFor(m=>m.Note.Date)
     <h2>In Categories:</h2>
+    @if(@Model.Note.Categories.Length!=0)
+    {
     <table class="table">
         <thead>
             <tr>
@@ -26,18 +42,22 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var c in Model.Note.Categories)
+             @for (int i = 0; i < Model.Note.Categories.Count(); ++i)
             {
                 <tr>
-                    <td>@c</td>
                     <td>
-                        <input type="checkbox" name="CategoriesToRemove" value="@c">
+                                @Html.TextBoxFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td>
+                        <input type="checkbox" name="CategoriesToRemove" value="@Model.Note.Categories[i]">
                     </td>
                 </tr>
             }
         </tbody>
     </table>
     <input type="submit" value="Remove categories" class="btn btn-primary" />
+    }
+    <br/>
 </form>
-
+<a asp-action="Index" asp-controller="Note">Back to list</a>
 <div>

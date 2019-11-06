@@ -14,7 +14,10 @@ namespace Z02.Models
         public string Extension{get;set;}
         public Note()
         {
-
+            Title="write some title";
+            Categories=new string []{};
+            Date=DateTime.Now;
+            Text="Write some text";
         }
         public Note(string title, string[] categories, DateTime date, string text)
         {
