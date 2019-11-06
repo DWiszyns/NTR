@@ -20,7 +20,7 @@ namespace Z02.Controllers
             var notes = new List<Note>();
             this.Notes=_notesRepository.FindAll().Cast<Note>().ToList();
         }
-        public IActionResult Index(DateTime dateFrom, DateTime dateTo, string category)
+        public IActionResult Index(DateTime dateFrom, DateTime dateTo, string category="",int pageNumber=1)
         {
             if(dateFrom==DateTime.MinValue) dateFrom = DateTime.Today.AddYears(-1);
             if(dateTo==DateTime.MinValue) dateTo = DateTime.Today;
@@ -43,13 +43,8 @@ namespace Z02.Controllers
                     notes.Add(n);
                 }
             }
-            PaginatedList<Note> list = new PaginatedList<Note>(notes,1,10);
+            PaginatedList<Note> list = new PaginatedList<Note>(notes,pageNumber,10);
             return View("Index",new NoteIndexViewModel(list,possibleCategories,category,dateFrom,dateTo));
-        }
-
-        public IActionResult Delete(string Title)
-        {
-            return View("Index");
         }
         public IActionResult Clear(string Title)
         {
@@ -59,25 +54,34 @@ namespace Z02.Controllers
         public IActionResult AddCategory(NoteEditViewModel model)
         {
             model.Note.Categories=model.Note.Categories.Append(model.NewCategory).ToArray();
-            //Notes[Notes.IndexOf(prevNote)]=model.Note;
             model.NewCategory="";
-            return View("Edit",model);
+            if(Notes.Where(m=>m.Title==model.Note.Title).Any())
+                return View("Edit",model);
+            else return View("Add",model);
         }
         [HttpPost]
         public IActionResult RemoveCategories(NoteEditViewModel model)
         {
-            Note prevNote=model.Note=Notes.Where(m=>m.Title==model.Note.Title).FirstOrDefault();
             foreach(var c in model.CategoriesToRemove ?? new string[] { })
             {
                 model.Note.Categories=model.Note.Categories.Where(v=>v!=c).ToArray();
             }
-            Notes[Notes.IndexOf(prevNote)]=model.Note;
-            return View("Edit",model);
+            model.CategoriesToRemove=new string[]{};
+            if(Notes.Where(m=>m.Title==model.Note.Title).Any())
+                return View("Edit",new NoteEditViewModel(model.Note));
+            else return View("Add",new NoteEditViewModel(model.Note));
         }
         public IActionResult Add()
         {
             Note n = new Note{};
             return View(new NoteEditViewModel(n));
+        }
+        [HttpPost]
+        public IActionResult Add(NoteEditViewModel model)
+        {
+            Notes.Add(model.Note);
+            _notesRepository.Save(model.Note);
+            return Index(DateTime.MinValue,DateTime.MinValue,"");
         }
         public IActionResult Edit(string title)
         {
@@ -87,20 +91,17 @@ namespace Z02.Controllers
         [HttpPost]
         public IActionResult Edit(NoteEditViewModel model)
         {            
-            Note n = Notes.Where(m=>m.Title==model.OldTitle).FirstOrDefault();
-            return View("Index");
+            Note oldNote = Notes.Where(m=>m.Title==model.OldTitle).FirstOrDefault();
+            Note newNote = model.Note;
+            _notesRepository.Update(oldNote,newNote);
+            return Index(DateTime.MinValue,DateTime.MinValue,"");
         }
-         [HttpPost]
-        public IActionResult Remove(NoteIndexViewModel model)
+        public IActionResult Delete(string title)
         {
-            foreach(var n in Notes)
-            {
-                if(n.Date>=model.DateFrom && n.Date<=model.DateTo && n.Categories.Contains(model.Category))
-                {
-                    model.Notes.Remove(n);
-                }
-            }
-            return View("Index",model);
+            Note note=Notes.Where(m=>m.Title==title).FirstOrDefault();
+            Notes.Remove(note);
+            _notesRepository.Delete(title);
+            return Index(DateTime.MinValue,DateTime.MinValue);
         }
     }
 }

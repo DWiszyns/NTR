@@ -1,6 +1,6 @@
 @model NoteEditViewModel
 <div class="col-md-4">
-        <form asp-controller="Note" asp-action="Save" method="post">
+        <form asp-controller="Note" asp-action="Edit" method="post">
             <label asp-for="Note.Title" class="control-label"></label>
             <input asp-for="Note.Title" class="form-control" />
             <label asp-for="Note.Text" class="control-label"></label>
@@ -10,25 +10,33 @@
                 data-val-maxlength="The field Description must be a string or array type with a maximum length of '5000'."
                 data-val="true" rows="4" cols="50" style="overflow:auto;resize:none" asp-for="PromptText"></textarea> <br />
             @Html.HiddenFor(m=>m.Note.Date)
+            @Html.HiddenFor(m=>m.OldTitle)
+            @Html.HiddenFor(m=>m.Note.Extension)
             @for (int i = 0; i < Model.Note.Categories.Count(); ++i)
             {
-                @Html.HiddenFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly" })
+                @Html.HiddenFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly",@autocomplete = "off" })
             }
             <input type="submit" value="Save" class="btn btn-primary" />
         </form>
         <form asp-controller="Note" asp-action="AddCategory" asp-action="AddCategory">
             @Html.HiddenFor(m=>m.Note.Title)
             @Html.HiddenFor(m=>m.Note.Text)
+            @Html.HiddenFor(m=>m.OldTitle)
+            @Html.HiddenFor(m=>m.Note.Extension)
             @for (int i = 0; i < Model.Note.Categories.Count(); ++i)
             {
-                @Html.HiddenFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly" })
+                @Html.HiddenFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly", @autocomplete = "off" })
             }
             <label asp-for="NewCategory" class="control-label"></label>
-            <input asp-for="NewCategory" class="form-control" />
+            <input asp-for="NewCategory" class="form-control" autocomplete = "off"/>
             <input type="submit" value="Add" class="btn btn-primary" />
         </form>
 <form method="post" asp-action="RemoveCategories">
     @Html.HiddenFor(m=>m.Note.Title)
+    @Html.HiddenFor(m=>m.Note.Text)
+    @Html.HiddenFor(m=>m.Note.Date)
+    @Html.HiddenFor(m=>m.Note.Extension)
+    @Html.HiddenFor(m=>m.OldTitle)
     <h2>In Categories:</h2>
     <table class="table">
         <thead>
@@ -41,10 +49,10 @@
             {
                 <tr>
                     <td>
-                                @Html.TextBoxFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly" })
+                                @Html.TextBoxFor(item => Model.Note.Categories[i], new { @class = "form-control", @readonly = "readonly", @autocomplete = "off" })
                     </td>
                     <td>
-                        <input type="checkbox" name="CategoriesToRemove" value="@Model.Note.Categories[i]">
+                        <input type="checkbox" name="CategoriesToRemove" value="@Model.Note.Categories[i]" autocomplete = "off">
                     </td>
                 </tr>
             }

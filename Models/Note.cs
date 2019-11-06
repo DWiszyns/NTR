@@ -19,12 +19,13 @@ namespace Z02.Models
             Date=DateTime.Now;
             Text="Write some text";
         }
-        public Note(string title, string[] categories, DateTime date, string text)
+        public Note(string title, string[] categories, DateTime date, string text, string extension)
         {
             Title=title;
             Categories=categories;
             Date=date;
             Text=text;
+            Extension=extension;
         }
          public Note(string title, string[] categories, DateTime date)
         {

@@ -15,20 +15,23 @@ namespace Z02.Repositories
         public Note FindById(string title)
         {
             Note note = null;
-            
-            using (StreamReader file = new StreamReader("./data/"+title+".txt"))
+            string[] files = Directory.GetFiles("./data/");
+            string extension="";
+            if(files.Where(m=>m==title+".txt").Any()) extension="txt";
+            else if(files.Where(m=>m==title+".md").Any()) extension="md";
+            using (StreamReader file = new StreamReader("./data/"+title+"."+extension))
             {
                 string line = file.ReadLine();
-                HashSet<string> categories = extractCategories(line);
+                HashSet<string> categories = getCategories(line);
                 line = file.ReadLine();
-                DateTime date = extractDate(line);
+                DateTime date = getDate(line);
                 string content = "";
                 while ((line = file.ReadLine()) != null)
                 {
                     content += line;
                 }
 
-                note = new Note(title, categories.ToArray(), date, content);
+                note = new Note(title, categories.ToArray(), date, content,extension);
             }
 
             return note;
@@ -44,11 +47,11 @@ namespace Z02.Repositories
                 {
                     //reading line describing category
                     string line = file.ReadLine();
-                    HashSet<string> categories = extractCategories(line);
+                    HashSet<string> categories = getCategories(line);
                     line = file.ReadLine();
-                    DateTime date = extractDate(line);
+                    DateTime date = getDate(line);
                     string text = file.ReadToEnd();
-                    Note newNote = new Note(extractNoteTitle(fileName), categories.ToArray(), date,text);
+                    Note newNote = new Note(getNoteTitle(fileName), categories.ToArray(), date,text,getExtension(fileName));
                     notes.Add(newNote);
                 }
             }
@@ -59,49 +62,58 @@ namespace Z02.Repositories
         public void Update(Note oldNote, Note newNote)
         {
             //delete old 
-            Delete(oldNote.Title);
+            if(oldNote.Title!=newNote.Title) Delete(oldNote.Title);
             //save new
-            Console.WriteLine(newNote);
             Save(newNote);
         }
 
         public void Save(Note note)
         {
             StringBuilder stringBuilder = new StringBuilder("");
-            stringBuilder.Append("category: \n");
-            stringBuilder.Append("date: ");
+            stringBuilder.Append("category: ");
+            for (int i = 0; i < note.Categories.Count(); ++i)
+            {
+                stringBuilder.Append(note.Categories[i]);
+                if (i < note.Categories.Count() - 1)
+                {
+                    stringBuilder.Append(",");
+                }
+            }
+            stringBuilder.Append("\ndate: ");
             stringBuilder.Append(note.Date.ToString("yyyy/MM/dd") + "\n");
             stringBuilder.Append(note.Text);
-            string path = directory + "/" + note.Title + "." + note.Extension;
+            string path = directory +"/"+ note.Title +"."+ note.Extension;
             File.WriteAllText(path, stringBuilder.ToString());
-            //create new file
         }
 
         public void Delete(string title)
         {
             string[] files = Directory.GetFiles(directory);
-            string fileToDelete = files.Single(file => extractNoteTitle(file).Equals(title));
+            string fileToDelete = files.Single(file => getNoteTitle(file).Equals(title));
             File.Delete(fileToDelete);
         }
-        private HashSet<string> extractCategories(string categoryString) 
+        private HashSet<string> getCategories(string categoryString) 
         {
             return categoryString.Split(':')[1].Split(',').Select(item => item.Trim()).ToHashSet();
         }
 
-        private DateTime extractDate(string dateString) 
+        private DateTime getDate(string dateString) 
         {
             string date = dateString.Split(':')[1];
             date = date.Trim();
             
-            //TODO:Add handling exceptions 
             return Convert.ToDateTime(date);
         }
 
-        private string extractNoteTitle(string fileName) 
+        private string getNoteTitle(string fileName) 
         {
             return fileName.Split('/').Last().Split('.')[0];
         }
 
+        private string getExtension(string fileName) 
+        {
+            return fileName.Split('/').Last().Split('.').Last();
+        }
 
     }
 }
