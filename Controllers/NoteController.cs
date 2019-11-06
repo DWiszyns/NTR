@@ -22,8 +22,8 @@ namespace Z02.Controllers
         }
         public IActionResult Index(DateTime dateFrom, DateTime dateTo, string category)
         {
-            if(dateFrom==null) dateFrom = new DateTime{};
-            if(dateFrom==null) dateFrom = DateTime.Today;
+            if(dateFrom==DateTime.MinValue) dateFrom = DateTime.Today.AddYears(-1);
+            if(dateTo==DateTime.MinValue) dateTo = DateTime.Today;
             if(category==null) category="";
             string[] possibleCategories= new string[]{};
             this.Notes=_notesRepository.FindAll().Cast<Note>().ToList();
@@ -35,15 +35,16 @@ namespace Z02.Controllers
 
                 }
             }
+            var notes = new List<Note>();
             foreach(var n in Notes)
             {
-                if(n.Date<=dateFrom || n.Date>=dateTo || (category!=""&&!n.Categories.Contains(category)))
+                 if(n.Date>=dateFrom && n.Date<=dateTo && (category==""||n.Categories.Contains(category)))
                 {
-                    Notes.Remove(n);
+                    notes.Add(n);
                 }
             }
-            PaginatedList<Note> list = new PaginatedList<Note>(Notes,1,10);
-            return View("Index",new NoteIndexViewModel(list,possibleCategories));
+            PaginatedList<Note> list = new PaginatedList<Note>(notes,1,10);
+            return View("Index",new NoteIndexViewModel(list,possibleCategories,category,dateFrom,dateTo));
         }
 
         public IActionResult Add(string Title)
@@ -57,28 +58,6 @@ namespace Z02.Controllers
         public IActionResult Clear(string Title)
         {
             return View("Index");
-        }
-        public IActionResult Filter(DateTime dateFrom, DateTime dateTo, string category)
-        {
-            string[] possibleCategories= new string[]{};
-            this.Notes=_notesRepository.FindAll().Cast<Note>().ToList();
-            foreach(var n in Notes)
-            {
-                foreach(var c in n.Categories)
-                {
-                    if(!possibleCategories.Contains(c)) possibleCategories=possibleCategories.Append(c).ToArray();
-
-                }
-            }
-            foreach(var n in Notes)
-            {
-                if(n.Date<=dateFrom || n.Date>=dateTo || !n.Categories.Contains(category))
-                {
-                    Notes.Remove(n);
-                }
-            }
-            PaginatedList<Note> list = new PaginatedList<Note>(Notes,1,10);
-            return View("Index",new NoteIndexViewModel(list,possibleCategories));
         }
         [HttpPost]
         public IActionResult AddCategory(NoteEditViewModel model)
