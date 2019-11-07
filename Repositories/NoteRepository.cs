@@ -81,6 +81,7 @@ namespace Z02.Repositories
                 }
             }
             stringBuilder.Append("\ndate: ");
+            note.Date=DateTime.Today;
             stringBuilder.Append(note.Date.ToString("yyyy/MM/dd") + "\n");
             stringBuilder.Append(note.Text);
             string path = directory +"/"+ note.Title +"."+ note.Extension;
