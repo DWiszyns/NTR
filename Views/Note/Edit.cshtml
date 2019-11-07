@@ -4,6 +4,7 @@
             @Html.ValidationSummary(true)
             <label asp-for="Note.Title" class="control-label"></label>
             <input asp-for="Note.Title" class="form-control" />
+            @Html.ValidationMessage("Title error")
             <label asp-for="Note.Text" class="control-label"></label>
             <textarea asp-for="Note.Text"
                 data-val-required="The Description field is required."
@@ -32,6 +33,7 @@
             <label asp-for="NewCategory" class="control-label"></label>
             <input asp-for="NewCategory" class="form-control" autocomplete = "off"/>
             <input type="submit" value="Add" class="btn btn-primary" />
+            @Html.ValidationMessage("Category error")
         </form>
 <form method="post" asp-action="RemoveCategories">
     @Html.ValidationSummary(true)
@@ -65,3 +67,7 @@
 </form>
 <a asp-action="Index" asp-controller="Note">Back to list</a>
 <div>
+
+ @section Scripts{
+     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+ }   

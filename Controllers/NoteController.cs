@@ -12,8 +12,8 @@ namespace Z02.Controllers
 {
     public class NoteController : Controller
     {
-        public NoteRepository _notesRepository;
-        public List<Note> Notes;
+        private NoteRepository _notesRepository;
+        private List<Note> Notes;
         public NoteController()
         {
             _notesRepository=new NoteRepository{};
@@ -46,15 +46,33 @@ namespace Z02.Controllers
             PaginatedList<Note> list = new PaginatedList<Note>(notes,pageNumber,10);
             return View("Index",new NoteIndexViewModel(list,possibleCategories,category,dateFrom,dateTo));
         }
-        public IActionResult Clear(string Title)
+        public IActionResult Clear()
         {
-            return View("Index");
+            return Index(DateTime.MinValue,DateTime.MinValue);
         }
         [HttpPost]
         public IActionResult AddCategory(NoteEditViewModel model)
         {
-            model.Note.Categories=model.Note.Categories.Append(model.NewCategory).ToArray();
-            model.NewCategory="";
+            if(ModelState.IsValid)
+            {
+                if(String.IsNullOrEmpty(model.NewCategory))
+                {
+                    ModelState.AddModelError("Category error","Empty category");
+                    if(Notes.Where(m=>m.Title==model.Note.Title).Any())
+                        return View("Edit",model);
+                    else return View("Add",model);
+                }
+                else if(model.Note.Categories.Where(m=>m==model.NewCategory).Any())
+                {
+                    ModelState.AddModelError("Category error","Category already exists");
+                    if(Notes.Where(m=>m.Title==model.Note.Title).Any())
+                        return View("Edit",model);
+                    else return View("Add",model);
+                }
+                model.Note.Categories=model.Note.Categories.Append(model.NewCategory).ToArray();
+                model.NewCategory="";
+            }
+            
             if(Notes.Where(m=>m.Title==model.Note.Title).Any())
                 return View("Edit",model);
             else return View("Add",model);
@@ -79,8 +97,21 @@ namespace Z02.Controllers
         [HttpPost]
         public IActionResult Add(NoteEditViewModel model)
         {
-            Notes.Add(model.Note);
-            _notesRepository.Save(model.Note);
+            if(ModelState.IsValid)
+            {
+                if(model.Note.Title=="write some title"||model.Note.Title=="")
+                {
+                    ModelState.AddModelError("Title error","Wrong title");
+                    return View(model);
+                }
+                else if(Notes.Where(m=>m.Title==model.Note.Title).Any())
+                {
+                     ModelState.AddModelError("Title error","Title already taken");
+                    return View(model);
+                }
+                Notes.Add(model.Note);
+                _notesRepository.Save(model.Note);
+            }
             return Index(DateTime.MinValue,DateTime.MinValue,"");
         }
         public IActionResult Edit(string title)
@@ -93,6 +124,15 @@ namespace Z02.Controllers
         {            
             Note oldNote = Notes.Where(m=>m.Title==model.OldTitle).FirstOrDefault();
             Note newNote = model.Note;
+            if(ModelState.IsValid)
+            {
+                if(model.Note.Title!=model.OldTitle&&(Notes.Where(m=>m.Title==model.Note.Title).Any()||model.Note.Title==""))
+                {
+                    ModelState.AddModelError("Title error","Title already taken");
+                    return View(model);
+                }
+                _notesRepository.Update(oldNote,newNote);
+            }
             _notesRepository.Update(oldNote,newNote);
             return Index(DateTime.MinValue,DateTime.MinValue,"");
         }
