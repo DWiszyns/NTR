@@ -13121,23 +13121,19 @@
     ]
   },
   "packageFolders": {
-    "/home/users/dwiszyns/.nuget/packages/": {},
-    "/usr/share/dotnet/sdk/NuGetFallbackFolder": {}
+    "/home/dominik/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/users/dwiszyns/Documents/Z02/Z02.csproj",
+      "projectUniqueName": "/home/dominik/Documents/Studia/NTR/NTR/Z02.csproj",
       "projectName": "Z02",
-      "projectPath": "/home/users/dwiszyns/Documents/Z02/Z02.csproj",
-      "packagesPath": "/home/users/dwiszyns/.nuget/packages/",
-      "outputPath": "/home/users/dwiszyns/Documents/Z02/obj/",
+      "projectPath": "/home/dominik/Documents/Studia/NTR/NTR/Z02.csproj",
+      "packagesPath": "/home/dominik/.nuget/packages/",
+      "outputPath": "/home/dominik/Documents/Studia/NTR/NTR/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "/usr/share/dotnet/sdk/NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "/home/users/dwiszyns/.nuget/NuGet/NuGet.Config"
+        "/home/dominik/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
@@ -13164,16 +13160,23 @@
             "version": "[2.0.7, )"
           },
           "Microsoft.NETCore.App": {
+            "suppressParent": "All",
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
           }
         },
         "imports": [
-          "net461"
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
         ],
         "assetTargetFallback": true,
-        "warn": true
+        "warn": true,
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.0.100/RuntimeIdentifierGraph.json"
       }
     }
   }

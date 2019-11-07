@@ -133,7 +133,6 @@ namespace Z02.Controllers
                 }
                 _notesRepository.Update(oldNote,newNote);
             }
-            _notesRepository.Update(oldNote,newNote);
             return Index(DateTime.MinValue,DateTime.MinValue,"");
         }
         public IActionResult Delete(string title)
