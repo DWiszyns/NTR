@@ -109,6 +109,11 @@ namespace Z02.Controllers
                      ModelState.AddModelError("Title error","Title already taken");
                     return View(model);
                 }
+                else if(String.IsNullOrEmpty(model.Note.Extension))
+                {
+                     ModelState.AddModelError("Extension error","Please choose an extension");
+                    return View(model);
+                }
                 Notes.Add(model.Note);
                 _notesRepository.Save(model.Note);
             }
@@ -129,6 +134,11 @@ namespace Z02.Controllers
                 if(model.Note.Title!=model.OldTitle&&(Notes.Where(m=>m.Title==model.Note.Title).Any()||model.Note.Title==""))
                 {
                     ModelState.AddModelError("Title error","Title already taken");
+                    return View(model);
+                }
+                else if(model.Note.Extension=="")
+                {
+                     ModelState.AddModelError("Extension error","Please choose an extension");
                     return View(model);
                 }
                 _notesRepository.Update(oldNote,newNote);

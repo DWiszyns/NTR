@@ -14,7 +14,6 @@ namespace Z02.Models
         public DateTime Date { get; set; }
         public string[] Categories { get; set; }
         public string Text { get; set; }
-        [Required(ErrorMessage = "Please choose extension")]
         public string Extension{get;set;}
         public Note()
         {

@@ -14,7 +14,7 @@
                 data-val="true" rows="4" cols="50" style="overflow:auto;resize:none" asp-for="PromptText"></textarea> <br />
             @Html.LabelFor(n => n.Note.Extension)
             @Html.DropDownListFor(n => n.Note.Extension, Model.Extensions, "")
-            @Html.ValidationMessageFor(m=>Model.Note.Extension) 
+            @Html.ValidationMessage("Extension error") 
             <br/><br/>
             @Html.HiddenFor(m=>m.Note.Date)
             @for (int i = 0; i < Model.Note.Categories.Count(); ++i)

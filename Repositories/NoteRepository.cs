@@ -49,6 +49,7 @@ namespace Z02.Repositories
                     //reading line describing category
                     string line = file.ReadLine();
                     HashSet<string> categories = getCategories(line);
+                    if(categories.First()=="") categories = new HashSet<string>{};
                     line = file.ReadLine();
                     DateTime date = getDate(line);
                     string text = file.ReadToEnd();
